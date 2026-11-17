@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuel Injector Sizing Calculator — cc/min, Lbs/Hr & Duty Cycle — Accurate Material Estimator</title>
+  <meta name="description" content="Calculate required fuel injector flow rates in cc/min and lbs/hr, 85% duty cycle limit, and fuel pump LPH for gasoline and E85 ethanol.">
+  <link rel="canonical" href="https://sebiglesias.com.ar/fuel-injector-size-calculator/">
+  <meta name="theme-color" content="#f97316">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fuel Injector Sizing Calculator — cc/min, Lbs/Hr & Duty Cycle">
+  <meta property="og:description" content="Calculate required fuel injector flow rates in cc/min and lbs/hr, 85% duty cycle limit, and fuel pump LPH for gasoline and E85 ethanol.">
+  <meta property="og:url" content="https://sebiglesias.com.ar/fuel-injector-size-calculator/">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2BNDBQP0W7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2BNDBQP0W7');
+  </script>
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3381238987477190">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3381238987477190" crossorigin="anonymous"></script>
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Fuel Injector Sizing Calculator \u2014 cc/min, Lbs/Hr & Duty Cycle",
+    "url": "https://sebiglesias.com.ar/fuel-injector-size-calculator/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "Calculate required fuel injector flow rates in cc/min and lbs/hr, 85% duty cycle limit, and fuel pump LPH for gasoline and E85 ethanol.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why should fuel injectors never exceed 80% to 85% duty cycle?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "At duty cycles over 85% to 90%, the electromagnetic solenoid in the injector does not have enough time to physically close between engine cycles. The injector begins to 'float' or stay locked wide open, causing fuel puddling, loss of fuel metering control, and sudden lean air/fuel mixture spikes that melt pistons."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does E85 ethanol require 30% larger fuel injectors than pump gas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ethanol has lower chemical energy density per gallon than pure gasoline. To achieve the correct stoichiometric combustion ratio, engines running on E85 must inject approximately **30% to 35% more liquid fuel volume** to produce the exact same horsepower, necessitating much larger injectors and high-flow fuel pumps."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Brake Specific Fuel Consumption (BSFC)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "BSFC measures how many pounds of fuel an engine consumes each hour to generate one horsepower ($lbs / hp \\cdot hr$). Standard naturally aspirated engines have a BSFC of around 0.45 to 0.50. Forced induction turbo/supercharged engines require extra fuel for in-cylinder charge cooling and have a richer BSFC of 0.55 to 0.65."
+        }
+      }
+    ]
+  }
+]
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">🏁 High Performance EFI & Fuel Delivery</div>
+      <h1>Fuel Injector Sizing & Flow Rate Calculator</h1>
+      <p class="subtitle">Calculate required injector flow rate (cc/min and lbs/hr), safe 80%–85% duty cycle, and LPH fuel pump delivery for gasoline and E85.</p>
+    </header>
+
+    <!-- AdSense Top Banner -->
+    <div style="text-align:center; margin: 16px 0;">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3381238987477190"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <main class="calc-grid">
+      <!-- Inputs Card -->
+      <form class="card" id="fuel-injector-size-calculator-form" onsubmit="event.preventDefault();">
+        <h2>📐 Target Horsepower & Engine Config</h2>
+        
+        <div class="input-row">
+          <div class="form-group">
+            <label for="targetHp">Target Crank Horsepower (BHP)</label>
+            <div class="input-wrap">
+              <input type="number" id="targetHp" step="50" min="150" max="2000" value="550" required>
+              <span class="input-suffix">HP</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cylCount">Number of Cylinders / Injectors</label>
+            <select id="cylCount">
+              <option value="4" selected>4-Cylinder (4 Injectors)</option>
+              <option value="6">6-Cylinder (6 Injectors)</option>
+              <option value="8">8-Cylinder / V8 (8 Injectors)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="form-group">
+            <label for="fuelType">Fuel Formulation (BSFC)</label>
+            <select id="fuelType">
+              <option value="0.55" selected>Gasoline / Pump 93 Octane (BSFC 0.55 Turbo)</option>
+              <option value="0.48">Naturally Aspirated Gasoline (BSFC 0.48)</option>
+              <option value="0.75">E85 Ethanol / Flex Fuel (BSFC 0.75 — Needs +30% Flow)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dutyCycle">Maximum Safe Duty Cycle</label>
+            <select id="dutyCycle">
+              <option value="0.80">80% Duty Cycle (Ultra Safe Headroom)</option>
+              <option value="0.85" selected>85% Duty Cycle (Industry Standard Benchmark)</option>
+            </select>
+          </div>
+        </div>
+
+      </form>
+
+      <!-- Results Card -->
+      <div class="card">
+        <h2>🎯 Recommended Injector & Fuel Pump</h2>
+        
+        <div class="result-hero">
+          <div class="result-label">Recommended Fuel Injector Size</div>
+          <div class="result-number" id="recInjectorCc">1,000 cc</div>
+          <div class="result-label" style="color:#ffffff;">Standard Bosch EV14 High-Impedance</div>
+          <div style="font-size:0.95rem; color:#fed7aa; margin-top:6px;" id="flowLbsText">Flows 89.0 lbs/hr per Injector</div>
+        </div>
+
+        <div class="sub-hero-grid">
+          <div class="sub-hero-col">
+            <div class="sub-hero-label">Exact Minimum Flow</div>
+            <div class="sub-hero-val" id="exactCc">934 cc / min</div>
+            <div class="sub-hero-sub">At 43.5 PSI base pressure</div>
+          </div>
+          <div class="sub-hero-col">
+            <div class="sub-hero-label">In-Tank Fuel Pump Flow</div>
+            <div class="sub-hero-val" id="fuelPumpLph">270 LPH</div>
+            <div class="sub-hero-sub">Liters Per Hour (+20% safety)</div>
+          </div>
+        </div>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <div class="spec-desc">Base Fuel Pressure</div>
+            <div class="spec-val">43.5 PSI (3.0 Bar Reference)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-desc">Injector Impedance</div>
+            <div class="spec-val">High (12–14 Ω Saturation)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-desc">Injector Type</div>
+            <div class="spec-val">Bosch EV14 / Injector Dynamics</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-desc">Total Fuel Delivery</div>
+            <div class="spec-val" id="totalGalHour">≈ 60 Gallons / Hour WOT</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Amazon Supplies Box -->
+    <section class="supplies-card">
+      <h3>🛠️ Recommended Tools, Hardware & Building Supplies</h3>
+      <div class="supplies-grid">
+        <div class="supply-item">
+          <div>
+            <div class="supply-title">Bosch Motorsport EV14 1000cc High Impedance Fuel Injectors</div>
+            <div class="supply-desc">Genuine Bosch multi-hole orifice spray pattern provides stable idle and crisp throttle response.</div>
+          </div>
+          <a href="https://www.amazon.com/s?k=bosch+ev14+1000cc+fuel+injectors&tag=sebiglesias-20" target="_blank" rel="nofollow noopener" class="btn-amazon">Check on Amazon →</a>
+        </div>
+        <div class="supply-item">
+          <div>
+            <div class="supply-title">Walbro / TI Automotive F90000267 450 LPH High Pressure E85 Fuel Pump</div>
+            <div class="supply-desc">Submersible in-tank turbine fuel pump flows up to 450 LPH, supporting 750+ WHP on E85 ethanol.</div>
+          </div>
+          <a href="https://www.amazon.com/s?k=walbro+450+lph+fuel+pump+e85&tag=sebiglesias-20" target="_blank" rel="nofollow noopener" class="btn-amazon">Check on Amazon →</a>
+        </div>
+        <div class="supply-item">
+          <div>
+            <div class="supply-title">Aeromotive 13129 EFI Adjustable Bypass Fuel Pressure Regulator</div>
+            <div class="supply-desc">1:1 boost-reference fuel pressure regulator with 1/8" NPT gauge port and -6 AN O-ring ports.</div>
+          </div>
+          <a href="https://www.amazon.com/s?k=aeromotive+13129+fuel+pressure+regulator&tag=sebiglesias-20" target="_blank" rel="nofollow noopener" class="btn-amazon">Check on Amazon →</a>
+        </div>
+        <div class="supply-item">
+          <div>
+            <div class="supply-title">GlowShift Universal Mechanical 0-100 PSI Fuel Pressure Gauge Kit</div>
+            <div class="supply-desc">Vibration-damped silicone-filled dial gauge installs directly on fuel rails to monitor base fuel pressure.</div>
+          </div>
+          <a href="https://www.amazon.com/s?k=glowshift+fuel+pressure+gauge+mechanical&tag=sebiglesias-20" target="_blank" rel="nofollow noopener" class="btn-amazon">Check on Amazon →</a>
+        </div>
+      </div>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-top:14px; margin-bottom:0; text-align:center;">
+        ⚖️ <em>Affiliate Notice: As an Amazon Associate, this site earns from qualifying purchases at no additional cost to you. We strictly link to trade-grade construction tools, hardware, and safety materials.</em>
+      </p>
+    </section>
+
+    <!-- FAQ Section for SEO -->
+    <section class="faq-section">
+      <h2 style="font-size:1.35rem; color:#ffffff; margin-bottom:16px;">Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <div class="faq-q">Why should fuel injectors never exceed 80% to 85% duty cycle?</div>
+        <div class="faq-a">At duty cycles over 85% to 90%, the electromagnetic solenoid in the injector does not have enough time to physically close between engine cycles. The injector begins to 'float' or stay locked wide open, causing fuel puddling, loss of fuel metering control, and sudden lean air/fuel mixture spikes that melt pistons.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why does E85 ethanol require 30% larger fuel injectors than pump gas?</div>
+        <div class="faq-a">Ethanol has lower chemical energy density per gallon than pure gasoline. To achieve the correct stoichiometric combustion ratio, engines running on E85 must inject approximately **30% to 35% more liquid fuel volume** to produce the exact same horsepower, necessitating much larger injectors and high-flow fuel pumps.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is Brake Specific Fuel Consumption (BSFC)?</div>
+        <div class="faq-a">BSFC measures how many pounds of fuel an engine consumes each hour to generate one horsepower ($lbs / hp \cdot hr$). Standard naturally aspirated engines have a BSFC of around 0.45 to 0.50. Forced induction turbo/supercharged engines require extra fuel for in-cylinder charge cooling and have a richer BSFC of 0.55 to 0.65.</div>
+      </div>
+    </section>
+
+    <!-- Bottom AdSense Banner -->
+    <div style="text-align:center; margin: 32px 0;">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-3381238987477190"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <footer>
+      <p>© 2026 <a href="https://sebiglesias.com.ar/">sebiglesias.com.ar</a> · Fuel Injector Sizing Calculator — cc/min, Lbs/Hr & Duty Cycle. Educational and trade reference tool.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
